@@ -11,14 +11,17 @@ use App\Enum\UserAccountStatusEnum;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AppFixtures extends Fixture
 {
     private \Faker\Generator $faker;
+    private $passwordHasher;
 
-    public function __construct()
+    public function __construct(UserPasswordHasherInterface $passwordHasher)
     {
         $this->faker = Factory::create();
+        $this->passwordHasher = $passwordHasher;
     }
 
     public function load(ObjectManager $manager): void
@@ -40,6 +43,7 @@ class AppFixtures extends Fixture
             $user->setEmail($this->faker->email);
             $user->setPassword($this->faker->password);
             $user->setAccountStatus(UserAccountStatusEnum::ACTIVE);
+            $user->setRoles(['ROLE_USER']);
             $users[] = $user;
             $manager->persist($user);
         }

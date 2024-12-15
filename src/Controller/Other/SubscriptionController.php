@@ -11,8 +11,13 @@ use Symfony\Component\Routing\Attribute\Route;
 class SubscriptionController extends AbstractController
 {
     #[Route(path: '/subscriptions', name: 'subscriptions')]
+    #[IsGranted('ROLE_USER')]
     public function show(): Response
     {
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('homepage');
+        }
+
         return $this->render('other/abonnements.html.twig');
     }
 }
